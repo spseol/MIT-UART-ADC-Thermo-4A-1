@@ -2,8 +2,6 @@
 #include "milis.h"
 #include "spse_stm8.h"
 
-/*#include "delay.h"*/
-//#include <cstdint>
 #include <stdio.h>
 #include "stm8s_adc2.h"
 #include "uart1.h"
@@ -58,18 +56,23 @@ void setup(void)
 int main(void)
 {
     uint32_t time = 0;
+    uint16_t napeti;
+    uint16_t teplota;
     uint16_t ADCx;
 
     setup();
 
     while (1) {
 
-        if (milis() - time > 333 && BTN_PUSH) {
+        if (milis() - time > 1111 /*&& BTN_PUSH*/) {
             LED_REVERSE; 
             time = milis();
             ADCx = ADC_get(ADC2_CHANNEL_4);
-            printf("%ld %d\r\n", time, ADCx);
+            napeti = (uint32_t)3300 * ADCx / (uint32_t)1024;
+            teplota = ((uint32_t)33000 * ADCx - 4096000) / 19968;
+            printf("ADCx = %d; U = %dmV T=%d.%d \r\n", ADCx, napeti, teplota/10, teplota%10);
 
+            //printf("%ld %d\r\n", time, ADCx);
         }
 
         /*LED_REVERSE; */
